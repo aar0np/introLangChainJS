@@ -37,19 +37,18 @@ export async function getVectorStore() {
 
 async function initVectorStore() {
     try {
-      const texts = await loadDocs();
+      const docs = await loadDocs();
       const astraConfig = getAstraConfig();
 
-      // Initialize the vector store.
+      // Initialize the vector store with the docs variable also
+      // generates embeddings from the documents and stores them.
       const vectorStore = await AstraDBVectorStore.fromDocuments(
-        texts,
+        docs,
         new OpenAIEmbeddings({ openAIApiKey: OPENAI_API_KEY,
                                batchSize: 512 }),
                                astraConfig
       );
 
-      // Generate embeddings from the documents and store them.
-      vectorStore.addDocuments(texts);
       return vectorStore;
     } catch (error) {
       console.error("Error initializing vector store:", error);
